@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#f7f5f0">
+<title>ふたりのごはん</title>
+<style>
+:root{--bg:#f7f5f0;--ink:#22251f;--muted:#77786f;--accent:#34483d;--card:#fffefa;--line:#e5e1d8}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Hiragino Kaku Gothic ProN","Yu Gothic",sans-serif}
+main{max-width:620px;margin:auto;min-height:100svh;padding:24px 20px 42px;display:flex;flex-direction:column}
+header{display:flex;justify-content:space-between;align-items:center;padding:8px 0 18px;font-size:12px;letter-spacing:.12em;color:var(--muted)}
+.logo{font-weight:700;color:var(--ink)}.screen{display:none;flex:1;flex-direction:column}.screen.active{display:flex}
+.hero{justify-content:center;text-align:center;align-items:center;gap:20px;padding:30px 0 70px}
+.eyebrow{font-size:11px;letter-spacing:.22em;color:var(--muted)}h1{font-size:clamp(32px,8vw,48px);font-weight:650;letter-spacing:.03em;line-height:1.35;margin:0}
+.sub{font-size:14px;color:var(--muted);line-height:1.8;margin:0}
+button,.btn{font:inherit;cursor:pointer}.start{margin-top:18px;background:var(--accent);color:white;border:0;border-radius:999px;padding:17px 34px;min-width:180px;font-size:14px;letter-spacing:.08em}
+.section-head{padding:28px 0 22px}.section-head h2{font-size:27px;margin:8px 0;font-weight:650}.back{border:0;background:transparent;color:var(--muted);padding:10px 0;text-align:left;font-size:13px}
+.genres{display:grid;grid-template-columns:1fr 1fr;gap:12px}.genre{border:1px solid var(--line);background:var(--card);border-radius:18px;padding:22px 16px;min-height:140px;text-align:left;color:var(--ink);display:flex;flex-direction:column;justify-content:space-between}.emoji{font-size:30px}.genre strong{font-size:17px}.genre small{color:var(--muted);font-size:11px;margin-top:5px}
+.places{display:grid;gap:12px;padding-bottom:24px}.place{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:17px;display:flex;align-items:center;gap:14px}.place-emoji{font-size:30px;width:42px;text-align:center}.place-info{flex:1;min-width:0}.place-info strong{font-size:15px;display:block}.place-info span{font-size:11px;color:var(--muted);display:block;margin-top:5px}.map{display:inline-block;color:var(--accent);font-size:12px;font-weight:650;text-decoration:none;border:1px solid #c9d1c9;border-radius:999px;padding:10px 12px;white-space:nowrap}
+footer{padding-top:22px;margin-top:auto;text-align:center;font-size:11px;color:var(--muted)}
+@media(min-width:500px){main{padding-top:30px}.hero{padding-bottom:100px}.genre{min-height:160px;padding:26px}}
+</style>
+</head>
+<body><main>
+<header><span class="logo">ふたりのごはん</span><span>OUR FOOD DATE</span></header>
+<section id="home" class="screen active hero">
+<div class="eyebrow">TODAY'S DATE</div><h1>今日は何の気分？</h1><p class="sub">ふたりで食べたいものを選ぼう。</p>
+<button class="start" id="start">TAP TO START　↗</button>
+</section>
+<section id="genres" class="screen">
+<button class="back" data-back="home">← 最初に戻る</button><div class="section-head"><div class="eyebrow">STEP 01</div><h2>何を食べたい？</h2><p class="sub">今の気分に近いジャンルを選んでね。</p></div>
+<div class="genres">
+<button class="genre" data-genre="ramen"><span class="emoji">🍜</span><span><strong>ラーメン</strong><small>RAMEN</small></span></button>
+<button class="genre" data-genre="world"><span class="emoji">🌏</span><span><strong>世界の料理</strong><small>WORLD FOOD</small></span></button>
+<button class="genre" data-genre="japanese"><span class="emoji">🍱</span><span><strong>和食</strong><small>JAPANESE</small></span></button>
+<button class="genre" data-genre="curry"><span class="emoji">🍛</span><span><strong>カレー</strong><small>CURRY</small></span></button>
+</div></section>
+<section id="places" class="screen">
+<button class="back" data-back="genres">← ジャンルに戻る</button><div class="section-head"><div class="eyebrow">STEP 02</div><h2 id="placeTitle">お店候補</h2><p class="sub">気になるお店を選ぶとGoogleマップが開くよ。</p></div><div id="placeList" class="places"></div>
+</section>
+<footer>ふたりの「おいしい」を見つけよう。</footer>
+</main>
+<script>
+const restaurants={
+ramen:{title:"ラーメン",emoji:"🍜",links:["https://maps.app.goo.gl/XEbAvHMf4AmufKKTA?g_st=ic","https://maps.app.goo.gl/pPjwQWTJGkdHK32G6?g_st=ic","https://maps.app.goo.gl/LRSwbNL2vBdjvfns6?g_st=ic","https://maps.app.goo.gl/6HFZLEX5sTxTr6ZFA?g_st=ic"]},
+world:{title:"世界の料理",emoji:"🌏",links:["https://maps.app.goo.gl/2LZmuQLrvSrLrEvo7?g_st=ic","https://maps.app.goo.gl/fX1sZGi1eGQx2Gf19?g_st=ic","https://maps.app.goo.gl/bw7jzRKu4PzG5LfF8?g_st=ic","https://maps.app.goo.gl/ULVnSQsAcgGHxsuu6?g_st=ic"]},
+japanese:{title:"和食",emoji:"🍱",links:["https://maps.app.goo.gl/cNWpxF66qqqnGy8A8?g_st=ic","https://maps.app.goo.gl/hdgo2pprCSZXzuQEA?g_st=ic","https://maps.app.goo.gl/hYoXsJeSRjyLa9Ub6?g_st=ic","https://maps.app.goo.gl/Bn6E5nMU1zHgJ4NZ8?g_st=ic"]},
+curry:{title:"カレー",emoji:"🍛",links:["https://maps.app.goo.gl/37tg88aXNP439TmL7?g_st=ic","https://maps.app.goo.gl/yFC4uRXhbfTqCSg56?g_st=ic","https://maps.app.goo.gl/af2bVfYwpwmmyUq79?g_st=ic","https://maps.app.goo.gl/K1W3YmgkwVvX4R5u8?g_st=ic"]}
+};
+function show(id){document.querySelectorAll('.screen').forEach(s=>s.classList.toggle('active',s.id===id));window.scrollTo(0,0)}
+document.getElementById('start').addEventListener('click',()=>show('genres'));
+document.querySelectorAll('[data-back]').forEach(b=>b.addEventListener('click',()=>show(b.dataset.back)));
+document.querySelectorAll('[data-genre]').forEach(b=>b.addEventListener('click',()=>{const data=restaurants[b.dataset.genre];document.getElementById('placeTitle').textContent=data.title+'のお店候補';const list=document.getElementById('placeList');list.replaceChildren();data.links.forEach((url,i)=>{const row=document.createElement('article');row.className='place';const emoji=document.createElement('div');emoji.className='place-emoji';emoji.textContent=data.emoji;const info=document.createElement('div');info.className='place-info';const name=document.createElement('strong');name.textContent='お店候補 '+(i+1);const note=document.createElement('span');note.textContent='Googleマップで場所を確認';info.append(name,note);const a=document.createElement('a');a.className='map';a.href=url;a.target='_blank';a.rel='noopener noreferrer';a.textContent='地図を見る ↗';row.append(emoji,info,a);list.append(row)});show('places')}));
+</script></body></html>
