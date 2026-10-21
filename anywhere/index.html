@@ -42,9 +42,11 @@ try{const res=await fetch(url,{headers:{Accept:'application/json'},signal:AbortS
 }
 if(requestId!==activeRequest)return;if(!geo)throw lastError||Error('場所が見つからない');
 const q=broad?'restaurant':(genreQuery[selectedGenre]||'restaurant');
+const tag=selectedGenre==='カフェ'?'amenity:cafe':selectedGenre==='スイーツ'?'shop:pastry':'amenity:restaurant';
 const urls=[
-'https://photon.komoot.io/api/?limit=30&lat='+geo.lat+'&lon='+geo.lon+'&q='+encodeURIComponent(q),
-'https://photon.komoot.io/api/?limit=30&q='+encodeURIComponent(q+' near '+place)
+'https://photon.komoot.io/reverse?lon='+geo.lon+'&lat='+geo.lat+'&radius=5&limit=30&osm_tag='+encodeURIComponent(tag),
+'https://photon.komoot.io/reverse?lon='+geo.lon+'&lat='+geo.lat+'&radius=5&limit=30&osm_tag='+encodeURIComponent('amenity:restaurant'),
+'https://photon.komoot.io/api/?q='+encodeURIComponent(q)+'&lat='+geo.lat+'&lon='+geo.lon+'&limit=30'
 ];
 let features=[];
 for(const url of urls){try{const res=await fetch(url,{headers:{Accept:'application/json'},signal:AbortSignal.timeout(12000)});if(!res.ok)throw Error('店舗検索 '+res.status);const j=await res.json();if(Array.isArray(j.features)&&j.features.length){features=j.features;break}}catch(e){lastError=e}}
