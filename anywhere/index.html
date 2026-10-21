@@ -56,8 +56,16 @@ if(requestId!==activeRequest)return;
 let places=features.map(f=>{const p=f.properties||{},xy=f.geometry?.coordinates||[];return {name:p.name||p.street||'',type:typeFor(f),address:[p.housenumber,p.street,p.district,p.city,p.state].filter(Boolean).join(' '),icon:/cafe|coffee/i.test((p.type||'')+' '+(p.osm_value||''))?'☕':'🍽️',map:mapUrl((p.name||'')+' '+place),distance:Math.hypot(Number(xy[0])-geo.lon,Number(xy[1])-geo.lat),category:p.osm_value||p.type||''}}).filter(p=>p.name&&p.category!=='street'&&p.category!=='locality');
 places=places.filter((p,i,a)=>a.findIndex(x=>x.name===p.name)===i);
 if(!places.length)throw lastError||Error('empty');
-const pool=places.filter(p=>p.name!==lastPickedName),choices=pool.length?pool:places;
-const pick=choices[Math.floor(Math.random()*choices.length)];lastPickedName=pick.name;
+const historyKey='futari-anywhere-pick-history-v1';
+const scope=place.trim().toLocaleLowerCase()+'|'+selectedGenre;
+let history={};try{history=JSON.parse(localStorage.getItem(historyKey)||'{}')}catch(e){history={}}
+const recent=Array.isArray(history[scope])?history[scope]:[];
+let choices=places.filter(p=>!recent.includes(p.name)&&p.name!==lastPickedName);
+if(!choices.length){history[scope]=[];choices=places.filter(p=>p.name!==lastPickedName);if(!choices.length)choices=places;status.textContent='🎲 この条件のお店を一周したから、候補をリセットして再抽選するで！'}
+const pick=choices[Math.floor(Math.random()*choices.length)];
+lastPickedName=pick.name;
+history[scope]=[pick.name,...recent.filter(n=>n!==pick.name)].slice(0,10);
+try{localStorage.setItem(historyKey,JSON.stringify(history))}catch(e){}
 status.textContent='🎉 今回の1軒が決まったで！ 気に入らなかったら下のボタンで引き直せるで。';
 addPlaceCard(pick);const note=document.createElement('p');note.className='helper';note.textContent='店舗名はOpenStreetMap系の地図データから取得。情報が古い場合もあるため、営業時間・口コミ・予算は地図で確認してな。';cards.append(note);addRerollButton()
 }catch(err){
