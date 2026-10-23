@@ -38,7 +38,8 @@ export default {
   }
   const result = await upstream.json().catch(()=>({}));
   if (!upstream.ok) return reply({error:"AI provider error "+upstream.status},502);
-  if (typeof result.output_text !== "string" || !result.output_text.trim()) return reply({error:"No analysis returned"},502);
-  return reply({analysis:result.output_text.trim(),framesAnalyzed:body.frames.length});
+  const analysis = typeof result.output_text === "string" ? result.output_text.trim() : (Array.isArray(result.output) ? result.output.flatMap(item => Array.isArray(item.content) ? item.content : []).filter(item => item.type === "output_text" && typeof item.text === "string").map(item => item.text).join("\\n").trim() : "");
+  if (!analysis) return reply({error:"No analysis returned"},502);
+  return reply({analysis,framesAnalyzed:body.frames.length});
  }
 };
