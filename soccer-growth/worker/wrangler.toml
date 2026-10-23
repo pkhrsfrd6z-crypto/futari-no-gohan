@@ -1,0 +1,9 @@
+name = "pitchlog-video-analysis"
+main = "index.js"
+compatibility_date = "2026-10-23"
+
+# Before deploying, replace this with the exact origin of the hosted PITCHLOG app.
+# Example: "https://your-project.pages.dev"
+[vars]
+ALLOWED_ORIGIN = "https://REPLACE-WITH-YOUR-PITCHLOG-ORIGIN"
+OPENAI_MODEL = "gpt-6-astra"
