@@ -6,4 +6,4 @@ compatibility_date = "2026-10-23"
 # Example: "https://your-project.pages.dev"
 [vars]
 ALLOWED_ORIGIN = "https://REPLACE-WITH-YOUR-PITCHLOG-ORIGIN"
-OPENAI_MODEL = "gpt-6-astra"
+OPENAI_MODEL = "gpt-4.1-mini"
