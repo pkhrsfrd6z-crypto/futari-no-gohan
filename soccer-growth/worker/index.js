@@ -12,6 +12,7 @@ export default {
   const reply = (data, status=200) => new Response(JSON.stringify(data), {status, headers:cors});
   if (request.method === "OPTIONS") return new Response(null,{status:204,headers:cors});
   if (allowed !== "*" && origin !== allowed) return reply({error:"Origin not allowed"},403);
+  if (request.method === "GET" && new URL(request.url).pathname.endsWith("/health")) return reply({service:"pitchlog-video-analysis",status:"online",configured:Boolean(env.OPENAI_API_KEY && env.PITCHLOG_KEY)});
   if (request.method !== "POST") return reply({error:"POST required"},405);
   if (!env.OPENAI_API_KEY || !env.PITCHLOG_KEY) return reply({error:"Server secrets are not configured"},503);
   if (request.headers.get("X-Pitchlog-Key") !== env.PITCHLOG_KEY) return reply({error:"Invalid app key"},401);
