@@ -26,11 +26,16 @@ export default {
    parts.push({type:"input_text",text:"抽出時刻（秒）: "+Math.max(0,Number(f.timeSeconds)||0)});
    parts.push({type:"input_image",image_url:f.jpegDataUrl,detail:"low"});
   }
-  const upstream = await fetch("https://api.openai.com/v1/responses", {
+  let upstream;
+  try {
+   upstream = await fetch("https://api.openai.com/v1/responses", {
    method:"POST",
    headers:{"Authorization":"Bearer "+env.OPENAI_API_KEY,"Content-Type":"application/json"},
-   body:JSON.stringify({model:env.OPENAI_MODEL||"gpt-6-astra",store:false,input:[{role:"user",content:parts}],max_output_tokens:1600})
-  });
+   body:JSON.stringify({model:env.OPENAI_MODEL||"gpt-4.1-mini",store:false,input:[{role:"user",content:parts}],max_output_tokens:1600})
+   });
+  } catch {
+   return reply({error:"Could not reach the AI provider. Try again later."},502);
+  }
   const result = await upstream.json().catch(()=>({}));
   if (!upstream.ok) return reply({error:"AI provider error "+upstream.status},502);
   if (typeof result.output_text !== "string" || !result.output_text.trim()) return reply({error:"No analysis returned"},502);
