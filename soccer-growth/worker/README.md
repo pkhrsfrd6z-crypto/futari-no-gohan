@@ -11,7 +11,8 @@ Do not put an OpenAI API key in `index.html`, GitHub, or the browser. Configure 
 3. Set the variable `ALLOWED_ORIGIN` to the exact origin where PITCHLOG is hosted, for example `https://your-project.pages.dev`. Do not leave it as `*` for a public deployment.
 4. Optionally set `OPENAI_MODEL` to a vision-capable model available to your API account. The default is `gpt-4.1-mini`, which supports image input. Confirm model availability and billing for your API account before testing.
 5. In PITCHLOG, paste the Worker URL into the analysis API URL field and enter the Worker key.
-6. Test first with a short clip. Check the browser console and Worker logs if the request fails.
+6. After deployment, open `https://YOUR-WORKER-URL/health` in a browser. It should return JSON with `status: online`; `configured: true` means both server secrets are present (it does not prove the AI provider key works).
+7. Test first with a short clip. Check the browser console and Worker logs if the request fails.
 
 ## Request and response
 
